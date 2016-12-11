@@ -1,0 +1,47 @@
+% !TeX spellcheck = en_GB
+\section{Question 1}
+
+\subsection{A)}
+\begin{quote}
+	\textit{"Consider	Apache	Flink: \url{https://flink.apache.org}.	You	should	characterize	this	system,	describe	how	it	can	be	used	in	the	context	of	the	Lambda	architecture	and	compare	it	with	systems	you	have	used	during	your	projects."}
+\end{quote}
+\newpar INTRO
+Apache Flink(from here just Flink) is a streaming dataflow engine. It works in a distributed setting and makes analysis of streaming data(data in motion), and batch data(data at rest) analysis easier. It incorporates multiple other systems, for machine learning, graph-analysis, and more. To further characterize Flink I will use the characterization model presented in the course.
+
+\newpar \textbf{Datamodel:} Flink works on event-based streams of data. The specific format it works in is Java and Scala embedded objects, but in some cases also works with Python objects. By allowing objects of defined languages it is easy to incorporate Flink with already existing systems, that uses these languages.
+
+\newpar \textbf{Partition Management:} To be able to scale, Flink builds upon Map-Reduce \todo[inline]{check} and therefore uses the same abstraction of being able to divide work among a collection of nodes, which can be placed on the same server or distributed on multiple machine on a network. Map-Reduce uses a hashing \todo[inline]{check} function for sharding. 
+
+Flink supports replaying of a stream to be able to recover from failures, that is if a failure occurs the stream is replayed from the last checkpoint. At a checkpoint the nodes have stored the incoming information and the job. This also implies that if the stream is infinite, some threshold of how long a node should store information must be provided to the framework. Flink uses Kapfka, which is a stream collecting system, to store the data of the checkpoints.
+
+\newpar \textbf{Batch and Stream Processing:} Flink provides two APIs, one for batch analysis and stream analysis. Since Map-Reduce streams HDFS files to do batch processes, Flink has implemented batch processing as a special case of stream-processing, greatly simplifying the process. The only difference is that while streaming data is infinite, batch data is finite. The two API's can be used from Java or Scala, and provide a Java-Streams-Like interface, where it is easy to do typical SQL commands, such as where, grouping, sum and so on. Furthermore Flink has made it possible to easily define a window of the stream to allow for more sophisticated analysis.
+
+Flink provides Pipelining to make nodes able to concurrently work on different tasks, even on different machines.
+
+\newpar \textbf{Throughput:} 
+
+\newpar LAMBDA
+
+\newpar IN REALATION TO PROJECTS
+\subsection{B)}
+\begin{quote}
+		\textit{"You	are	asked	to	store	a	master	data	set	of	80	GB	given	to	you	as	an	XML	file.	Why	is	the	XML	data	format	problematic	when	working	with	Map-Reduce?	Would	a	format	transformation	from	XML	to	JSON	be	helpful?	Would	a	transformation	from	XML	to	CSV	be	helpful?	How	would	you	store	this	master	data	set?	Explain	your	answers"}
+\end{quote}
+The XML format is in a tree structure, and might not be easily partitioned into smaller parts, which can be distributed among the data nodes of the storage system that Map-Reduce works on. Furthremore XML is also a very verbose format and therefore data will take up more space which will make the computations somewhat slower and require more space on the server, even though hadoop of course handles this quite fine, less space use is always good to be preffered when the available information is the same. Transforming the data to JSON would mostly help on the amount of data, since JSON is less verbose but JSON is still a tree-structure language and therefore partitioning would still be a bit difficult. Because Json objects do not specify a start and an end tag it can actually be more difficult to split up than xml. CSV on the other hand is flat data structure and therefore is easily partitioned per line and therefore allow map-reduce to work on multiple processes, greatly increasing performance. 
+
+It is important to notice that as soon as one transforms data, it per definition becomes derived data. Therefore, the master data set will be derived, which puts a question on what happens to the primary data. I will argue that a transformation can be done from XML to CSV, which allows one to go through a similar process which converts the resulting CSV back into XML data which, even though is not the same 1's and 0's, is equal to the primary data, and therefore just keeping the CSV and not the primary data is enough.
+
+\subsection{C)}
+\begin{quote}
+	\textit{"Describe	pros	and	cons	of	using	the	Hadoop	ecosystem,	based	on	the	lessons	you	learnt	from	project	2	and	project	3."}
+\end{quote}
+
+The Hadoop ecosystem, has changed the industry, and how it looks at data in general. By going from a restricted structured boxed view, the big data movement tries to break these boundaries but it is still in its youth. The relational databases go back to the 1970s and have had many years to polish its rough edges and making it easily available to developers. The big data movement is still trying to do this and most frameworks in the Hadoop data system exactly tries to sell it self as easy to use, but in my experience most of these systems still have a high learning curve. Furthermore setting up a server with a Hadoop ecosystem requires a lot of time. Systems like Horton tries to make this process easier by creating a single entrypoint for organizing and managing a large amount of the different hadoop frameworks. 
+
+Another con is that integrating different frameworks is often difficult. Since there does not exist a standard often times frameworks are made to integrate well with other specific frameworks, but if it is desired to integrate with another system then the developers are often left to figure out how and if it is possible themselves.
+
+For small systems, or embedded systems where it is known that the amount of data will never surpass a low limit, the overhead of using big data technologies is also often not worth it. Then using relational database systems, can be enough 
+
+A lot of the frameworks have a lot of overhead on what they do, even though they scale better. If you know you will never store a lot of data, or want it to be available on the device of the user, going with a SQLlite or a system specific Relational Database would be smarter.
+
+That said, the Hadoop ecosystem really shines when it comes to large amounts of data. A lot of businesses saw a huge rise in the amount of data they save through the 2000s and now that processors were nearing their clock speed limit, being able to to scale systems vertically were very important. The Hadoop ecosystem is build around concepts of being able to abstract the distributiveness of the data away and allow developers to write code which automatically would scale to an arbitrary amount of machines. Even in the case of machine breakdowns the frameworks of Hadoop will handle it and be able to replay, reroute, or abandon the process, and the developers are able to specify which approach should be taken as to how to restore the data of that node.

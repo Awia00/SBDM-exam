@@ -1,0 +1,20 @@
+% !TeX spellcheck = en_GB
+\section{Question 2}
+
+\subsection{A)}
+\begin{quote}
+	\textit{"Consider	the	data	set	from	project	3.	How	much	of	the	work	you	did	in	project	2	to	clean	data	could	be	reused	to	clean	the	data	set	from	project	3?	Explain	your	answer."}
+\end{quote}
+From a code perspective it would be difficult to reuse the source code of Project 2 to clean the data from Project 3, mostly because we used the serialization framework AVRO, which then requires the data to be in a certain format to use as input and outputs it in a certain way as well. One could have very generic mappers and reducers which in combination could have had the same effect and could have been put together differently to match this project. 
+
+We used streaming to clean the data in Project one so in some sense it would be possible to reuse the streaming part, since when streaming it is possible to handle the 80GB of data in Project 3, but with some other logic on what data to remove, label or ignore.
+
+One of the kinds of cleaning that would need special development for Project 3 is the fact that sometimes, when cars have been staying still for too long they are randomly teleported to other parts of the map. If some analysis would be done on location, some cleaning process needs to handle this.
+
+\subsection{B)}
+\begin{quote}
+	\textit{"Describe	a	cleaning	process	for	the	data	set	in	project	3.	Describe	the	design	of	a	system	that	implements	this	cleaning	process."}
+\end{quote}
+A cleaning process over this data could include checking for valid values, such as speed values that are positive or 0. Then checking whether or not each value has a type, such as Vehicle-type or Person-type. Another step in the cleaning process would be to check for missing information or information which should not exist for an entity. Another more difficult part of cleaning the data would be to check for the teleporting vehicles. This would require some table of information on where each car was last measured and if the distance from that point to the current point was to far, then the next entity should be labelled something saying which would make it possible to handle this in the analysis.
+
+To create such a cleaning process, I would create a Map-Reduce program such that it can handle the large amounts of data. Then I would create a mapper for each of the different procedures, and checks, which each output to the next mapper in a pipelining fashion. By doing this it is possible for map reduce to parallize as much of the process as possible. A reducer could then be placed at the end, aggregating all the results into two lists of entitites, one for vehicles and one for people. At the end the results could be stored on HDFS, ready for batch or streaming analysis.

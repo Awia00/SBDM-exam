@@ -1,0 +1,28 @@
+% !TeX spellcheck = en_GB
+\section{Question 3}
+
+\subsection{A)}
+\begin{quote}
+	\textit{"Assume	that	the	data	from	project	3	is	not	a	massive	data	set,	but	a	data	stream.	Every	time	step,	a	large	collection	of	vehicles	and	persons	is	generated	(based	on	the	attributes	contained	in	the	<vehicle>	and	<person>	elements	of	the	XML	file	given	in	project	3).	How	would	you	proceed	to	characterize	such	a	data	stream?"}
+\end{quote}
+The data of the stream contains structured data since it is in XML format. The structure is as follows:
+\begin{verbatim}
+<Timestep>
+    <vehicle, id, x, y, angle, type, speed, pos, lane, slope/>
+</Timestep>
+\end{verbatim}
+or 
+\begin{verbatim}
+<Timestep>
+    <person, id, x, y, angle, speed, pos, edge/>
+</Timestep>
+\end{verbatim}
+depending on which type the input has. This information, since it is in XML is easily obtained since the structure of the data is part of the data itself. Had the data been in JSON format it would be more difficult, albeit not impossible to find this structure, and had the data been unstructured it would have been even more difficult, since one should try to create and fit a schema at the same time.
+
+Furthermore to describe the data stream one could examine the number of discrete elements that are present over timesteps in total or an average of that. Given these values it becomes obvious that we need big data systems to handle the stream. This could be done either with batch jobs, but it could also be done by making windowed stream analysis. By examining a window in the stream one could approximate the average amount of entities pr timesteps. 
+
+\subsection{B)}
+\begin{quote}
+		\textit{"Describe	a	meaningful	view	based	on	the	data	set	from	the	Project	2	data	set.	How	do	you	obtain	that	view?	Describe	the	problems	you	faced	obtaining	such	views	in	project	2	and	how	you	fixed	them."}
+\end{quote}
+I have choosen to showcase the third view from our Project 2 as I find that the most interesting. Furthermore we did not describe 
