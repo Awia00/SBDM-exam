@@ -20,7 +20,7 @@ Flink provides Pipelining to make nodes able to concurrently work on different t
 
 \newpar \textbf{Throughput:} 
 
-\newpar LAMBDA
+\newpar Interestingly enough Flink has a lot of comparisons to the Lambda architecture. The Lambda introduced in the course, is seperated into the following stages, the data sources, the master dataset, the serving layer, the speed layer and the queries. At the serving layer, batch views are computed, and similarly at the speed layer streaming analysis is done, and therefore it becomes quite clear that Flink naturally fits the lambda architecture by being able to be the main framework for each of these layers. Further more, since Flink allows the same code for streaming analysis to batch analysis this would greatly increase the effectiveness of the developers.
 
 \newpar IN REALATION TO PROJECTS
 \subsection{B)}
