@@ -19,7 +19,7 @@ or
     <person, id, x, y, angle, speed, pos, edge/>
 </Timestep>
 \end{verbatim}
-depending on which type the input has. In general when working with XML, the structur is easily obtained since the structure of the data is part of the data itself. Had the data been in JSON format it would be more difficult, albeit not impossible to find this structure, and had the data been unstructured it would have been even more difficult, since one should try to create and fit a schema at the same time.
+depending on which type the input has. In general when working with XML which is semi-structured, the structure of the stream is easily obtained since the structure of the data pr definition is part of the data itself. In some cases the structure of the XML is even specified in an explicit XML schema. Since JSON also is a semi-structured format it would also be possible to define the structure from the data, but JSON does not have an XML schema counterpart. Had the data been unstructured it would have been even more difficult, since one should try to create and fit a schema at the same time.
 
 The mean throughput can be described as the average of the number of discrete elements over a timeunit. Often when working with infinite streams we need to specify and limit that time to base this over. This could be calculated either with batch jobs, but it could also be calculated using windowed stream analysis. By examining a window in the stream one could approximate the average amount of entities pr timesteps. This approximation of the overall mean throughput would probably also be more describing than an overall mean, since streams are infinite and ever changing. The overall mean would not be representative for the stream currently, and it would therefore be a bad foundation to base decisions on.
 
@@ -70,8 +70,8 @@ public void map(AvroKey<Readings> key, NullWritable value, Context context) thro
   }
 }
 \end{lstlisting}
-\label{code:project2_mapper}
 \caption{The map method for batch view 2 in project 2.}
+\label{code:project2_mapper}
 \end{figure}
 
 It becomes obvious that having this as one mapper does use the map-reduce framework to its full potential. It would have been a better idea to split this into multiple mappers, for example in the situation where the mapper iterates over the readings, it would have been smarter to use a mapper for that job. This could greatly increase the parallelism and therefore the scalability of the batch job.
