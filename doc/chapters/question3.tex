@@ -5,7 +5,9 @@
 \begin{quote}
 	\textit{"Assume	that	the	data	from	project	3	is	not	a	massive	data	set,	but	a	data	stream.	Every	time	step,	a	large	collection	of	vehicles	and	persons	is	generated	(based	on	the	attributes	contained	in	the	<vehicle>	and	<person>	elements	of	the	XML	file	given	in	project	3).	How	would	you	proceed	to	characterize	such	a	data	stream?"}
 \end{quote}
-The data of the stream contains structured data since it is in XML format. The structure is as follows:
+To characterize a stream of data I would look at at least three factors; structure, mean throughput and peek throughput. 
+
+In project 3 the data of the stream contains structured data since it is in XML format. The structure is as follows:
 \begin{verbatim}
 <Timestep>
     <vehicle, id, x, y, angle, type, speed, pos, lane, slope/>
@@ -17,11 +19,11 @@ or
     <person, id, x, y, angle, speed, pos, edge/>
 </Timestep>
 \end{verbatim}
-depending on which type the input has. This information, since it is in XML, is easily obtained since the structure of the data is part of the data itself. Had the data been in JSON format it would be more difficult, albeit not impossible to find this structure, and had the data been unstructured it would have been even more difficult, since one should try to create and fit a schema at the same time.
+depending on which type the input has. In general when working with XML, the structur is easily obtained since the structure of the data is part of the data itself. Had the data been in JSON format it would be more difficult, albeit not impossible to find this structure, and had the data been unstructured it would have been even more difficult, since one should try to create and fit a schema at the same time.
 
-Furthermore to describe the data stream one could examine the number of discrete elements that are present over timesteps in total or an average of that. Given these values it becomes obvious that we need big data systems to handle the stream. This could be done either with batch jobs, but it could also be done by making windowed stream analysis. By examining a window in the stream one could approximate the average amount of entities pr timesteps. This approximation of the overall mean would probably also be more describing than an overall mean, since streams are infinite and ever changing, the overall mean would not be representative for the stream currently, and it would therefore be a bad foundation to base decisions on whether or not to scale the system.
+The mean throughput can be described as the average of the number of discrete elements over a timeunit. Often when working with infinite streams we need to specify and limit that time to base this over. This could be calculated either with batch jobs, but it could also be calculated using windowed stream analysis. By examining a window in the stream one could approximate the average amount of entities pr timesteps. This approximation of the overall mean throughput would probably also be more describing than an overall mean, since streams are infinite and ever changing. The overall mean would not be representative for the stream currently, and it would therefore be a bad foundation to base decisions on.
 
-\newpar Another characterization could be the peek amount of elements in the stream, which could be calculated by checking the last value and seeing if the currently calculated mean is higher than that. By using the mean instead of hard values, the computation is less sensitive to very short peeks, which might or might not be desired. This value could have some kind of fallout value (for example a day or a week), such that it continues to be representative. The peek value can be used to help the developers decide on whether to scale the system, or rent extra computation in small periods of time, as it is for example seen with AWS or Azure.
+\newpar The third characterization could be the peek amount of elements in the stream, which could be approximated by comparing the current mean throughput with the last mean throughput. By using the mean instead of hard values, the computation is less sensitive to very short peeks, which might or might not be desired. This value could have some kind of fallout value (for example a day or a week), such that it continues to be representative and a former peek does not continue to overshadow the current reality. The peek value can be used to help the developers decide on whether to scale the system, or rent extra computation in small periods of time, as it is for example seen possible with AWS\footnote{https://aws.amazon.com/} or Azure\footnote{https://azure.microsoft.com/en-us/?b=16.48}.
 
 \subsection{B)}
 \begin{quote}
