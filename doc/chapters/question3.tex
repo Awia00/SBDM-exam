@@ -38,7 +38,9 @@ It is necessary to assume that every person is connected to Wi-Fi whenever they 
 
 To obtain the data we created a map-reduce program. The main part of the analysis is done in a mapper. The map method can be seen in figure \ref{code:project2_mapper}. The method tests the entity for null values, and whether its a WiFi client or an accespoint. Then the entity is correlated to a specific access point. Going over all the information of that access point at that time. 
 
- \begin{lstlisting}[frame=single, backgroundcolor=\color{light-gray}, basicstyle=\footnotesize\ttfamily, language=Java, numbers=left, numberstyle=\tiny \color{black}, breaklines=true, label=code:project2_mapper]
+\begin{figure}[H]
+	
+\begin{lstlisting}[frame=single, backgroundcolor=\color{light-gray}, basicstyle=\footnotesize\ttfamily, language=Java, numbers=left, numberstyle=\tiny \color{black}, breaklines=true]
  
 public void map(AvroKey<Readings> key, NullWritable value, Context context) throws IOException, InterruptedException {
     Readings readings = key.datum();
@@ -62,15 +64,16 @@ public void map(AvroKey<Readings> key, NullWritable value, Context context) thro
 	}
 }
 \end{lstlisting}
+\label{code:project2_mapper}
+\caption{The map method for batch view 2 in project 2.}
+\end{figure}
 
 It becomes obvious that having this as one mapper does use the map-reduce framework to its full potential. It would have been a better idea to split this into multiple mappers, for example in the situation where the mapper iterates over the readings, it would have been smarter to use a mapper for that job. This could greatly increase the parallization and therefore the scalability of the batch job.
 
 The reducer simply aggregates the rooms, times together to a list over each specific wificlient.
 
 A snippet of the output can be seen in figure \ref{fig:result_data}
-\begin{figure}[p]
-	\caption{Resulting data}
-	\label{fig:result_data}
+\begin{figure}[H]
 	\begin{verbatim}
 	...
 	fd958189-5ad3-5586-a7ad-d3fe4e6f4695	
@@ -90,11 +93,13 @@ A snippet of the output can be seen in figure \ref{fig:result_data}
 	    5A07-2016-10-05:09, AUD32-3A56-2016-10-25:09,
 	...
 	\end{verbatim}
+	\caption{Resulting data}
+	\label{fig:result_data}
 \end{figure}
 
 Which can be represented a bit better visually in a schema as seen in figure \ref{fig:result_schema}.
 
-\begin{figure}[p]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{figures/schema-from-data.png}
 	\caption{Resulting Schema}
@@ -103,7 +108,7 @@ Which can be represented a bit better visually in a schema as seen in figure \re
 
 With these results, we can put together a schema for the person and match it with course information and TimeEdit, to find the rooms the person have been around. The most plausible result is, that it is a 1st year GBI student, since the schemas match.
 
-\begin{figure}[p]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\linewidth]{figures/schema-from-timeedit.png}
 	\caption{Timeedit Schema for a 1st year GBI student}
