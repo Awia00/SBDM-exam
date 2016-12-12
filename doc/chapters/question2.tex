@@ -7,11 +7,13 @@
 \end{quote}
 From a code perspective it would be difficult to reuse the source code of Project 2 to clean the data from Project 3, mostly because we used the serialization framework AVRO, which then requires the data to be in a certain format to use as input and outputs it in a certain way as well. One could have very generic mappers and reducers which in combination could have had the same effect and could have been put together differently to match this project. 
 
-We used streaming to clean the data in Project one so in some sense it would be possible to reuse the streaming part, since when streaming it is possible to handle the 80GB of data in Project 3, but with some other logic on what data to remove, label or ignore.
+\newpar We used streaming to clean the data in Project one so in some sense it would be possible to reuse the streaming part, since when streaming it is possible to handle the 80GB of data in Project 3, but with some other logic on what data to remove, label or ignore.
 
-One of the kinds of cleaning that would need special development for Project 3 is the fact that sometimes, when cars have been staying still for too long they are randomly teleported to other parts of the map. If some analysis would be done on location, some cleaning process needs to handle this.
+\newpar One of the kinds of cleaning that would need special development for Project 3 is the fact that sometimes, when cars have been staying still for too long they are randomly teleported to other parts of the map. If some analysis would be done on location, some cleaning process needs to handle this.
 
-Referring back to question 1C it should be noted that as soon as we clean data, we can no longer (unless the cleaning only tags, or ignores) assume that the derived data is the same as the primary data. Because of this an approach to backing up the original data or otherwise it should be made very clear that whatever analysis is made on the data will always be done from derived data.
+\newpar Referring back to question 1C it should be noted that as soon as we clean data, we can no longer (unless the cleaning only tags, or ignores) assume that the derived data is the same as the primary data. Because of this an approach to backing up the original data or otherwise it should be made very clear that whatever analysis is made on the data will always be done from derived data.
+
+\newpar We choose to not remove or delete any data in the cleaning process but simply ignoring it and allowing the batch computations to decide whether or not to use data. This was done to make it possible for future batch views to use the outliers and missing values for other computations. For example if the operation system was unknown we did not use that WiFi client in the view, but it might be interesting in the future to see how many WiFi clients had unknown OS types. Having information about the what data is not there can be interesting in itself and therefore we did not remove it from the master dataset.
 
 \subsection{B)}
 \begin{quote}
