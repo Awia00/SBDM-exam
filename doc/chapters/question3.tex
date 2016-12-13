@@ -7,7 +7,7 @@
 	\end{quote}
 	To characterize the stream of data I decide to look at three factors; structure, mean throughput and peek throughput. I assume that the stream is irregular. One could also have chosen to characterize the data of the stream, such as the range, min, max, outliers and so on of the attributes.
 	
-	In project 3 the data of the stream contains semi-structured data since it is in XML format. The structure in question is as follows:
+	\newpar In project 3 the data of the stream contains semi-structured data since it is in XML format. The structure in question is as follows:
 	\begin{verbatim}
 	<Timestep>
 	    <vehicle, id, x, y, angle, type, speed, pos, lane, slope/>
@@ -21,7 +21,7 @@
 	\end{verbatim}
 	depending on which type the input has. In general when working with XML the structure of the stream is easily obtained since the structure of the data pr definition is part of the data itself. In some cases the structure of the XML is even specified in an explicit XML schema. Had the data been unstructured it would have been much more difficult to define, since one should try to create and fit a schema at the same time.
 	
-	The mean throughput can be described as the average of the number of discrete elements over a time period (for example per second). Often when working with infinite streams we need to specify and limit the period of time to base this mean over, since calculating over all existing data can make the computation very expensive. One way of calculating it could be using a window of the stream. By examining a window in the stream one could approximate the average amount of entities pr timesteps, by dividing the number of elements with the delta time of the window. This approximation of the overall mean throughput would probably also be more describing than an overall mean, since streams are infinite and ever changing. The overall mean would not be representative for the stream currently, and it would therefore be a bad foundation to base decisions on. The current mean throughput might be a better indicator on whether to scale the system horizontally or not.
+	\newpar The mean throughput can be described as the average of the number of discrete elements over a time period. This could be the mean of the number of cars and people over each timestep for example. Often when working with infinite streams we need to specify and limit the period of time to base this mean over, since calculating over all existing data can make the computation very expensive. One way of calculating it could be using a window of the stream. By examining a window in the stream one could approximate the average amount of entities pr timesteps, by dividing the number of elements with the delta time of the window. This approximation of the overall mean throughput would probably also be more describing than an overall mean, since streams are infinite and ever changing. The overall mean would not be representative for the stream currently, and it would therefore be a bad foundation to base decisions on. The current mean throughput might be a better indicator on whether to scale the system horizontally or not for example.
 	
 	\newpar A third characterization could be the peek amount of elements in the stream. This could be approximated by comparing the current mean throughput with the last highest mean throughput. By using the mean instead of absolute values, the computation is less sensitive to very short peeks, which might or might not be representative. This value could have some kind of fallout value (for example a day or a week), such that it continues to be representative and a former peek does not continue to overshadow the current reality. The peek value can be used to help the developers decide on whether or not to scale the system, or rent extra computation in small periods of time, as it is for example seen possible with AWS\footnote{https://aws.amazon.com/} or Azure\footnote{https://azure.microsoft.com/en-us/?b=16.48}.
 	
@@ -29,15 +29,15 @@
 	\begin{quote}
 			\textit{"Describe	a	meaningful	view	based	on	the	data	set	from	the	Project	2	data	set.	How	do	you	obtain	that	view?	Describe	the	problems	you	faced	obtaining	such	views	in	project	2	and	how	you	fixed	them."}
 	\end{quote}
-	I have chosen to showcase the second view from our Project 2 as I find that the most interesting. The entire report of Project 2 can be seen in appendix \ref{appendix:project2}. The view was described as follows: 
+	I have chosen to showcase the second view from our Project 2 as I find that the most interesting. The view was described as follows: 
 	\begin{quote}
 		\textit{"How can Wi-Fi data be used for tracking an individual at ITU?"}
 	\end{quote}
-	The hypothesis is that information about what access points a client has been connected to makes it possible to track a single person at ITU. Since each Wi-Fi client has an unique ID in the data set, tracking that ID around the ITU through various access points in certain rooms, one could connect this information to teaching activities. One could essentially build a schedule corresponding to a person, the holder of the unique ID, and by cross referencing the public course base, identify any student or teacher. 
+	The hypothesis is that information about what access points a client has been connected to makes it possible to track a single person at ITU, even if the data is anonymized. Because each Wi-Fi client has an unique ID in the data set, tracking that ID around the ITU through various access points in certain rooms, one could connect this information to teaching activities. One could essentially cross referencing the public course base with the WiFi schema and identify any student or teacher. 
 	
-	It is necessary to assume that every person is connected to the Wi-Fi whenever they are at ITU and even more important that they are connected to the access points in the rooms that they have courses in. 
+	It is necessary to assume that every person is connected to the Wi-Fi whenever they are at ITU and that they are connected to the access points in the rooms that they have courses in. 
 	
-	\newpar To obtain the data we created a map-reduce program. The main part of the analysis is done in a single mapper. The map method can be seen in figure \ref{code:project2_mapper}. The mapper joins the reading with its WiFi Client if it can, then it filters the reading based on whether it measurement type is Access Point or not. Then for each specific reading, the mapper joins the reading with its Access Point. Then the output is defined as the ID of the Wifi Client as the key and a string representation of the location and time of that reading as the value. The mapper filters on null values for Access Points, and Locations.
+	\newpar To obtain the data we created a MapReduce program. The main part of the analysis is done in a single mapper. The map method can be seen in figure \ref{code:project2_mapper}. The mapper joins the reading with its WiFi Client if it can, then it filters the reading based on whether the measurement type is Access Point or not. Then for each specific reading, the mapper joins the reading with its Access Point. Then the output is defined as the ID of the Wifi Client as the key and a string representation of the location and time of that reading as the value. The mapper filters on null values for Access Points, and Locations.
 	
 	\begin{figure}[H]
 		
@@ -74,9 +74,9 @@
 	\label{code:project2_mapper}
 	\end{figure}
 	
-	The reducer simply aggregates the rooms, times together to a list over each specific WiFi client.
+	The reducer simply aggregates the \textit{room-at-time} string together to a list over each specific WiFi client.
 	
-	\newpar A major critique point of this batch computation is that it only consists of one mapper, and therefore does not use the map-reduce framework to its full potential. It would have been a better idea to split this into multiple mappers, for example the for loop on line 12-24 could have been calculated in another mapper for that job. Similarly all filters could have been each mapper, and then chained together. This could greatly increase the concurrency and therefore the scalability of the batch job.
+	\newpar A major critique point of this batch computation is that it only consists of one mapper, and therefore does not use the MapReduce framework to its full potential. It would have been a better idea to split this into multiple mappers, for example the for loop on line 12-24 could have been calculated in another mapper for that job. Similarly the filters could have been represented in a mapper each. This could greatly increase the concurrency and therefore the scalability of the batch job.
 	
 	\newpar A snippet of the resulting view can be seen in figure \ref{fig:result_data}
 	
@@ -100,7 +100,7 @@
 	 5A07-2016-10-05:09, AUD32-3A56-2016-10-25:09,
 	...
 		\end{lstlisting}
-		\caption{Resulting data}
+		\caption{A snippet of the batch view from Project 2}
 		\label{fig:result_data}
 	\end{figure}
 	
@@ -109,11 +109,11 @@
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\linewidth]{figures/schema-from-data.png}
-		\caption{Resulting Schema}
+		\caption{Visual representation of the schema from figure \ref{fig:result_data}}
 		\label{fig:result_schema}
 	\end{figure}
 	
-	\newpar With these results, the schema of a WiFi Client can be correlated to the schema of a student at ITU. By matching which rooms at which times a Wifi Client has been to with a student's schema, we might be able to specify which person, or at least the programme of a student, a specific WiFi Client matches. For our result snippet shown above, the most plausible result is that the WiFi Client corresponds to a 1st year GBI student, since their schemas overlap nicely(see figure \ref{fig:timeedit_schema}).
+	\newpar With these results, the schema of a WiFi Client can be correlated to the schema of a student at ITU. For our result snippet shown above, the most plausible result is that the WiFi Client corresponds to a 1st year GBI student, since their schemas overlap nicely(see figure \ref{fig:timeedit_schema}).
 	
 	\begin{figure}[H]
 		\centering
@@ -122,6 +122,8 @@
 		\label{fig:timeedit_schema}
 	\end{figure}
 	
-	\newpar One of the most difficult parts of creating this batch view was handling the difference between WiFi Clients and Access Points, and in particularly how readings should be mapped to these. The design we chose was to use Map-Reduce over the readings, and make the mapper read in all the meta data into memory in the beginning of the job. Then when mapping the readings the meta data is looked up in two local list, one for WiFi clients and one for Access Points. We decided on this approach since the meta data file was of limited size and did not grow as quickly as the readings data. But this approach is not the most effective and if we had for example used Hive and imported each of the entities into three seperate tables. The process of joining meta data to readings would then have happened in a concurrent fashion. This is one of the clear advantages of leaving the responsibility of distribution logic to the frameworks.
+	\newpar One of the most difficult parts of creating this batch view was handling the difference between WiFi Clients and Access Points, and in particularly how readings should be mapped to these. The design we chose was to use MapReduce over the readings, and make the mapper read all the meta data into memory in the beginning of the job. Then when mapping the readings the meta data is looked up in two local list, one for WiFi clients and one for Access Points. 
 	
-	\newpar We also spend some time figuring out how to use the Avro serialization framework and how to integrate Avro with Map-Reduce. Avro uses a JSON like schema to define the binary format. Defining a schema with lists of lists was especially difficult, which was the case for the reading entity. Furthermore we needed to define two Avro schemas for the different types of data; one to the data before cleaning and one after it was cleaned and transformed.
+	We decided on this approach since the meta data file was of limited size and did not grow as quickly as the number of readings. But this approach is not the most effective and if we had used Hive we could have imported each of the entities into three seperate tables. The process of joining meta data to readings would then have happened in a distributed fashion. This is one of the clear advantages of leaving the responsibility of distribution logic to the frameworks.
+	
+	\newpar We also spend some time figuring out how to use the Avro serialization framework and how to integrate Avro with MapReduce. Avro uses a JSON like schema to define the binary format. Defining a schema with lists of lists was especially difficult, which was the case for the reading entity. Furthermore we needed to define two Avro schemas for the different types of data; one to the data before cleaning and one after it was cleaned and transformed.

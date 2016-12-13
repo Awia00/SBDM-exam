@@ -45,11 +45,11 @@ The XML format is a tree structure format, and might not be easily be partitione
 
 \newpar Another possibility that we have used in Project 2 is to use a binary format. We used the serialization framework Avro\footnote{\url{https://avro.apache.org/}} for this. By choosing to use a binary format, you can represent numbers as actual numbers and not text, therefore cutting down on the needed space. Furthermore if done properly it is still possible to make the format flat and therefore making partitioning easier. This approach of course requires more work to be done, and also enforces a scheme on the data, which makes it more difficult to extend the system later on.
 
-\newpar For project 3 we converted the data to a CSV format and stored it using Hive since it was well integrated. Hive stores the CSV data as distributed files on HDFS but uses an abstraction layer which makes the access seem like a regular database access. Hive allowed us to make all the views we needed and therefore it seemed like a good choice to store the data. 
+\newpar For project 3 we converted the data to a CSV format and stored it using Hive since it was well integrated. Hive stores the CSV data as distributed files on HDFS but uses an abstraction layer which makes the access seem like a regular database access\cite{hive}. Hive allowed us to make all the views we needed and therefore it seemed like a good choice to store the data. 
 
 It is important to notice that as soon as one transforms data, it per definition becomes derived data. Therefore, the master data set will be derived if stored in another format than it originally was, which asks the question on what to do with the primary data. I will argue that a transformation can be done from XML to CSV, which allows one to go through a similar process which converts the resulting CSV back into XML data. Even though the resulting data is not the original data, it is equal to the primary data, and therefore just keeping the CSV and not the primary data is enough in this case.
 
-\subsection{C)}
+\subsection{C)}\label{sec:1C}
 \begin{quote}
 	\textit{"Describe	pros	and	cons	of	using	the	Hadoop	ecosystem,	based	on	the	lessons	you	learnt	from	project	2	and	project	3."}
 \end{quote}
