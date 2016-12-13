@@ -73,7 +73,7 @@ By being able to handle these large volumes, data becomes available to analysis 
 
 \newpar One of the pros that we experienced was how well abstracted the interfaces to most of the frameworks was. When you use Hive for example you do not have to think about how the data is distributed because the system itself will do that for you, and therefore you minimize the chances of making mistakes. Of course having extensive knowledge of the system allows you to fine tune the system even more.
 
-\newpar The Hadoop ecosystem also focuses a lot on failure handling, such that even in the case of machine breakdowns the frameworks should be able to gracefully handle it and be able to replay, reroute, or abandon the process, and the developers are able to specify which approach should be taken as to how to restore the data of the crashed machine. 
+\newpar The Hadoop ecosystem also focuses a lot on failure handling. It is possible to setup HDFS such that it does not have a single point of failure. Even in the case of machine breakdowns the frameworks should be able to gracefully handle it and be able to replay, reroute, or abandon the process, or retrieve the data elsewhere. The developers are able to specify which approach should be taken as to how to restore the data or process of the crashed machine.
 
 \newpar For a lot of developers it has also been a deciding factor that the Apache foundation requires its projects to be open-source, which encourages developers to help find bugs, and ensures that the system does not require any proprietary frameworks, operating systems, or hardware.
 
